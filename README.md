@@ -1,3 +1,13 @@
+# Setup
+set up env file like so:
+
+```
+DISCORD_TOKEN=secret
+GUILD_ID=id
+```
+- Discord Token is from the Discord Developers site
+- Get Guild ID from Discord UI, enable Developer View
+
 # Discord Bot for QOTD
 
 discord.js
