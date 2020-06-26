@@ -55,4 +55,5 @@ IF user opts in to participate, the bot will request questions from them
 # Learning stuff
 
 [Module system in Node](https://nodejs.org/api/modules.html)
-Unit testing a module?
+
+[Unit testing a module with Mocha](https://www.digitalocean.com/community/tutorials/how-to-test-a-node-js-module-with-mocha-and-assert)
