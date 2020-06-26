@@ -1,10 +1,10 @@
 // https://mochajs.org
 // mocha testing
-require("./../index.js");
+require("../QotdBot.js");
 var assert = require("assert");
 // const envs = require("dotenv").config();
 const Discord = require("discord.js");
-// let client = new Discord.Client();
+const client = new Discord.Client();
 
 var Airtable = require("airtable");
 var base = new Airtable({ apiKey: process.env.AT_KEY }).base(
@@ -43,10 +43,13 @@ describe("airtable", () => {
 });
 
 describe("login", () => {
+  let testUser;
   before(() => {
-    let testUser = client.users.cache.get("322095868373106689");
+    testUser = client.users.cache.get("322095868373106689");
   });
-  beforeEach(() => {});
+  beforeEach(() => {
+    testUser = client.users.cache.get("322095868373106689");
+  });
 
   it("Load discord token from env", function () {
     assert.equal(
@@ -63,6 +66,7 @@ describe("login", () => {
   });
 
   it("Send DM to Ri", function () {
+    testUser = client.users.cache.get("322095868373106689");
     testUser.createDM().then((bot) => bot.send("this is a DM test!"));
   });
 });

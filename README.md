@@ -17,20 +17,25 @@ Sequelize
 
 ## main functionality
 
+[ ] cron-like scheduling:
+
+[cron on npm](https://www.npmjs.com/package/cron)
+
 [x] prompt someone to submit a question (do this thru airtable)
+
 [x] fetch questions from airtable or some other service
 
-- keep the questions in the question database, so maybe implement some sort of syncing or "migration"
-- ask questions to the qotd channel
-- design a data model for QOTD
+[ ] keep the questions in the question database
 
-```
-question
-title
-description
-date
+[ ] ask questions to the qotd channel via cron jobs
 
-```
+[x] design a data model for QOTD in Airtable
+
+[ ] save responses with metadata to AT; capture user metadata also
+
+- https://discordjs.guide/popular-topics/collectors.html
+
+IF user opts in to participate, the bot will request questions from them
 
 # how to's - discord.js
 
@@ -46,3 +51,8 @@ date
 # extra functionality
 
 - persist responses, use them to generate a weekly "magazine" of user-submitted QOTDs?
+
+# Learning stuff
+
+[Module system in Node](https://nodejs.org/api/modules.html)
+Unit testing a module?
