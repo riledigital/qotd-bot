@@ -34,35 +34,56 @@ module.exports = class QotdBot {
     this.members;
 
     // Set up the bot by connecting and initializing variables
-    this.client.once("ready", () => {
-      console.log("Logged in, ready to roll!");
-      let qotdChannel = this.client.channels.cache.get(
-        this.options.QS_CHANNEL_ID
-      );
-      var j = schedule.scheduleJob("* * * * * *", function () {
-        qotdChannel.send("TEST MESSAGE EVERY SECOND!");
+  }
+
+  getQuestion() {
+    return this.base("questions")
+      .select({
+        // Selecting the first 3 records in Grid view:
+        maxRecords: 100,
+        view: "grid",
+      })
+      .firstPage((err, records) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        }
+        // Get a random record
+        let randomIndex = Math.floor(Math.random() * (4 - 0));
+        let theRecord = records[randomIndex];
+        // Update the date_posted field in AT
+        this.base("questions").update(
+          theRecord.id,
+          {
+            date_posted: new Date().toLocaleDateString(),
+          },
+          (err, record) => {
+            if (err) {
+              console.error(err);
+              // reject(err);
+            }
+            // console.log(record.get("date_posted"));
+          }
+        );
+        return theRecord.fields;
       });
-    });
+  }
+
+  cronSendQotd() {
+    console.log("Cron callback running");
+    let q = this.getQuestion();
+    console.log(q);
+    QotdBot.makeEmbed(q);
   }
 
   getQotdChannel() {
-    return new Promise((resolve, reject) => {
-      console.log("Getting qotdchannel object");
-      try {
-        this.client.channels
-          .fetch(this.options.QS_CHANNEL_ID)
-          .then((channel) => {
-            console.log(`got ${channel}`);
-            resolve(channel);
-          });
-      } catch (e) {
-        console.log(`No channels!!! ${e}`);
-        reject(e);
-      }
+    this.client.channels.fetch(this.options.QS_CHANNEL_ID).then((channel) => {
+      console.log(`got ${channel}`);
+      return channel;
     });
   }
 
-  makeEmbed(q, author, imgUrl) {
+  static makeEmbed(q, author, imgUrl) {
     // inside a command, event listener, etc.
     const exampleEmbed = new Discord.MessageEmbed()
       .setColor("#0099ff")
@@ -81,6 +102,15 @@ module.exports = class QotdBot {
   }
 
   start() {
+    this.client.once("ready", () => {
+      console.log("Logged in, ready to roll!");
+      let qotdChannel = this.client.channels.cache.get(
+        this.options.QS_CHANNEL_ID
+      );
+      this.qotdChannel = qotdChannel;
+      var j = schedule.scheduleJob("* * * * * *", this.getQuestion);
+    });
+
     if (!this.qotdChannel) {
       this.qotdChannel = this.client.channels.cache.get(
         this.options.QS_CHANNEL_ID
@@ -160,45 +190,6 @@ module.exports = class QotdBot {
           }
         );
       });
-    });
-  }
-
-  fetchFirstQuestion(base) {
-    return new Promise((resolve, reject) => {
-      base
-        .select({
-          // Selecting the first 3 records in Grid view:
-          maxRecords: 100,
-          view: "grid",
-        })
-        .firstPage((err, records) => {
-          if (err) {
-            console.error(err);
-            reject(err);
-          }
-          // Get a random record
-          let randomIndex = Math.floor(Math.random() * (4 - 0));
-          let theRecord = records[randomIndex];
-          // Update the date_posted field in AT
-          base.update(
-            theRecord.id,
-            {
-              date_posted: new Date().toLocaleDateString(),
-            },
-            (err, record) => {
-              if (err) {
-                console.error(err);
-                reject();
-              }
-              // console.log(record.get("date_posted"));
-            }
-          );
-          resolve(theRecord.fields);
-          // records.forEach(function (record) {
-          //   console.log("Retrieved", record.fields);
-          //   resolve(record.fields);
-          // });
-        });
     });
   }
 };
