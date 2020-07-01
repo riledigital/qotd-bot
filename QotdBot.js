@@ -1,7 +1,8 @@
 var environment = process.env.NODE_ENV;
 
 // CRON STUFF 4 LATER
-var CronJob = require("cron").CronJob;
+var schedule = require("node-schedule");
+
 const envs = require("dotenv").config();
 const Discord = require("discord.js");
 const Airtable = require("airtable");
@@ -31,19 +32,16 @@ module.exports = class QotdBot {
     this.hasInitGuild = false;
     this.userList = [];
     this.members;
-    this.qotdChannel;
 
     // Set up the bot by connecting and initializing variables
     this.client.once("ready", () => {
       console.log("Logged in, ready to roll!");
-      this.getQotdChannel()
-        .then((channel) => {
-          this.qotdChannel = channel;
-        })
-        .then((channel) => {
-          console.log(channel);
-          this.setupCron();
-        });
+      let qotdChannel = this.client.channels.cache.get(
+        this.options.QS_CHANNEL_ID
+      );
+      var j = schedule.scheduleJob("* * * * * *", function () {
+        qotdChannel.send("TEST MESSAGE EVERY SECOND!");
+      });
     });
   }
 
@@ -62,37 +60,6 @@ module.exports = class QotdBot {
         reject(e);
       }
     });
-  }
-
-  cronCallback() {
-    console.log("Cron func running?");
-    // Trigger callback functions
-    // Select random question from available
-    // Send embed to
-    // this.getQotdChannel().then((channel) => channel.send("Lol cron test!"));
-
-    try {
-      this.qotdChannel.send("Lol cron test!");
-    } catch (e) {
-      console.log(e);
-    }
-
-    // this.fetchFirstQuestion(this.base("questions")).then((q) => {
-    //   this.qotdChannel.send(this.makeEmbed(q.body, q.author, q.image_url));
-    //   console.log(q);
-    // });
-  }
-
-  setupCron(cronString = "15 * * * * *") {
-    let jobDailyQuestion = new CronJob(
-      cronString,
-      this.cronCallback()
-      // null,
-      // true
-      // "America/New_York"
-    );
-    jobDailyQuestion.start();
-    // END CRON STUFF 4 LATER
   }
 
   makeEmbed(q, author, imgUrl) {
@@ -118,7 +85,6 @@ module.exports = class QotdBot {
       this.qotdChannel = this.client.channels.cache.get(
         this.options.QS_CHANNEL_ID
       );
-      this.setupCron();
     }
 
     this.client.on("message", (message) => {
