@@ -13,7 +13,7 @@ GUILD_ID=id
 # Discord Bot for QOTD
 
 discord.js
-Sequelize
+Airtable
 
 ## main functionality
 
@@ -32,6 +32,8 @@ Sequelize
 [x] design a data model for QOTD in Airtable
 
 [ ] save responses with metadata to AT; capture user metadata also
+
+[ ] capture a response and get data from all users
 
 - https://discordjs.guide/popular-topics/collectors.html
 
