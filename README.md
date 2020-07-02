@@ -18,14 +18,35 @@ QB compiles responses from respondents and persists them to a separate Airtable 
 
 The bot will read from a config.js file [per the Discord.js guide.](https://discordjs.guide/creating-your-bot/configuration-files.html)
 
-- Get the Discord Token is from the Discord Developers site
-- Get the guild ID from Discord UI, enable Developer View
-- Get the Airtable keys from the Airtable API docs
+- Get the Discord Token from [the Discord Developers site](https://discord.com/developers/applications)
+- Get the guild ID from Discord UI, [enable Developer View](https://discord.com/developers/docs/intro)
+- Get the Airtable keys from the [Airtable API docs](https://airtable.com/api)
 
 # Checkpoints
 
-[ ] Setup for bot
+[ ] Load setup and config keys/preferences for bot
+- Airtable key
+- Discord key
+- Frequency of questions
+- Airtable base key
+- Airtable base names
 
+[ ] Get users from Discord
+
+[ ] [Collect responses to questions](https://discordjs.guide/popular-topics/collectors.html#await-messages)
+
+### Discord functions
+
+[ ] Create embed message
+[ ] Send any message to the QOTD channel
+
+### Airtable functions
+
+[ ] Get question from Airtable
+- Fetch 3 records WHERE date_used IS null
+- Pick a random of the 3
+[ ] Update the date for a record to current date/time
+[ ] 
 
 # Test cases
 
