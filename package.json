@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --debug-brk",
-    "start": "node start.js"
+    "start": "node start.js",
+    "simplestart": "node simplestart.js"
   },
   "author": "",
   "license": "ISC",
