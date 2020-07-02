@@ -2,7 +2,6 @@ var environment = process.env.NODE_ENV;
 
 // CRON STUFF 4 LATER
 var schedule = require("node-schedule");
-
 const envs = require("dotenv").config();
 const Discord = require("discord.js");
 const Airtable = require("airtable");
@@ -19,14 +18,26 @@ class SimpleQotd extends Discord.Client {
       apiKey: config.AIRTABLE_API_KEY,
     });
     this.base = Airtable.base(config.AIRTABLE_BASE);
+    this.cronDaily;
   }
 
-  static questionAsEmbed(q, author = "QOTD-Bot", imgUrl) {
+  getMemberAvatarUrl(memberId) {
+    // this.users.cache.fetch(memberId).then((user) => {
+    //   return user.avatarURL();
+    // });
+    return;
+  }
+
+  static questionAsEmbed(q, author = config.BOT_DISPLAY_NAME, imgUrl) {
     // inside a command, event listener, etc.
     const exampleEmbed = new Discord.MessageEmbed()
       .setColor("#ffff00")
       .setTitle("Question of the Day")
-      .setAuthor("QOTD-Bot", imgUrl, "http://github.com/rl2999/qotd-bot/")
+      .setAuthor(
+        config.BOT_DISPLAY_NAME,
+        // imgUrl,
+        "http://github.com/rl2999/qotd-bot/"
+      )
       .setDescription(q + " @everyone")
       .setThumbnail(imgUrl)
       .setFooter("question submitted by " + author, imgUrl);
@@ -34,7 +45,7 @@ class SimpleQotd extends Discord.Client {
   }
 
   taskSendQotd() {
-    let q = this.getAirtableQuestion()
+    this.getAirtableQuestion()
       .then((q) => {
         console.log(q);
         this.getQotdChannel().send(
@@ -42,29 +53,51 @@ class SimpleQotd extends Discord.Client {
         );
       })
       .catch((e) => {
-        console.log("No new questions; please send in more!");
-        let msg = "There are no new questions. Please submit more questions!";
-        this.getQotdChannel().send(
-          new Discord.MessageEmbed()
-            .setColor("#ff0000")
-            .setTitle("No new questions!")
-            .setAuthor("QOTD-Bot", "", "http://github.com/rl2999/qotd-bot/")
-            .setDescription(msg)
-        );
+        if (e) {
+          console.log("No new questions; please send in more!");
+          let msg = `There are no new questions. 😥 Please submit more questions at ${config.QUESTION_FORM_LINK} 🙏`;
+          this.getQotdChannel().send(
+            new Discord.MessageEmbed()
+              .setColor("#ff0000")
+              .setTitle("No new questions!")
+              .setAuthor(
+                config.BOT_DISPLAY_NAME,
+                "",
+                "http://github.com/rl2999/qotd-bot/"
+              )
+              .setDescription(msg)
+          );
+        }
       });
   }
 
   cronRunQotd() {
-    console.log("Running cron: ");
+    // This is run on a schedule...
+    console.log(`Running cron with ${config.Q_FREQUENCY}`);
+    // Fetch + send the message
+    this.taskSendQotd();
+  }
+
+  scheduleCronStop() {
+    console.log("Cancelling daily questions!");
+    if (this.cronDaily) {
+      this.cronDaily.cancel();
+    }
   }
 
   scheduleCronTest() {
-    schedule.scheduleJob(config.Q_FREQUENCY, () => {
-      this.cronRunQotd();
-    });
+    if (!this.cronDaily) {
+      this.cronDaily = schedule.scheduleJob(config.Q_FREQUENCY, () => {
+        this.cronRunQotd();
+      });
+    }
   }
 
   getQotdChannel() {
+    // return this.channels
+    //   .fetch(config.QOTD_CHANNEL_ID)
+    //   .then((channel) => channel)
+    //   .catch(console.error);
     return this.channels.cache.get(config.QOTD_CHANNEL_ID);
   }
 
@@ -106,7 +139,7 @@ class SimpleQotd extends Discord.Client {
       this.base("questions")
         .select({
           // Selecting the first 3 records in grid:
-          maxRecords: 3,
+          maxRecords: 2,
           view: "grid",
           // Only get unused questions
           filterByFormula: "has_used = 0",
