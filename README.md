@@ -1,4 +1,3 @@
-
 # Qotd-Bot
 
 Qotd-Bot (QB) is a Discord bot that automatically sends a question of the day to a specific channel. Qotd-Bot is designed to make it easy to keep a conversation going in a Discord thread. Every 2 days (or a custom interval), QB requests a user to submit a question by sending an Airtable form.
@@ -9,7 +8,7 @@ QB compiles responses from respondents and persists them to a separate Airtable 
 
 # Requirements
 
-- Node.js
+- Node.js >14.4.0
 - Discord developer key
 - Airtable developer key
 - A pre-configured Airtable base
@@ -25,6 +24,7 @@ The bot will read from a config.js file [per the Discord.js guide.](https://disc
 # Checkpoints
 
 [ ] Load setup and config keys/preferences for bot
+
 - Airtable key
 - Discord key
 - Frequency of questions
@@ -33,7 +33,7 @@ The bot will read from a config.js file [per the Discord.js guide.](https://disc
 
 [ ] Get users from Discord
 
-[ ] [Collect responses to questions](https://discordjs.guide/popular-topics/collectors.html#await-messages)
+[ ][collect responses to questions](https://discordjs.guide/popular-topics/collectors.html#await-messages)
 
 ### Discord functions
 
@@ -43,24 +43,25 @@ The bot will read from a config.js file [per the Discord.js guide.](https://disc
 ### Airtable functions
 
 [ ] Get question from Airtable
+
 - Fetch 3 records WHERE date_used IS null
 - Pick a random of the 3
-[ ] Update the date for a record to current date/time
-[ ] 
+  [ ] Update the date for a record to current date/time
+  [ ]
 
 # Test cases
 
 ## Database
+
 - Get a record from Airtable
 - Update a record successfully
 - Remove a record
 
 ## Discord
+
 - Send a message to channel
 - Make an embed
 - Successfully get channel
-
-
 
 ## main functionality
 
