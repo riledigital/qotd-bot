@@ -22,12 +22,28 @@ The bot will read from a config.js file [per the Discord.js guide.](https://disc
 - Get the guild ID from Discord UI, enable Developer View
 - Get the Airtable keys from the Airtable API docs
 
+# Checkpoints
+
+[ ] Setup for bot
+
+
+# Test cases
+
+## Database
+- Get a record from Airtable
+- Update a record successfully
+- Remove a record
+
+## Discord
+- Send a message to channel
+- Make an embed
+- Successfully get channel
+
+
 
 ## main functionality
 
-[ ] cron-like scheduling:
-
-[cron on npm](https://www.npmjs.com/package/cron)
+[ ] cron-like scheduling
 
 [x] prompt someone to submit a question (do this thru airtable)
 
