@@ -47,7 +47,7 @@ class SimpleQotd extends Discord.Client {
   taskSendQotd() {
     this.getAirtableQuestion()
       .then((q) => {
-        console.log(q);
+        // console.log(q);
         this.getQotdChannel().send(
           SimpleQotd.questionAsEmbed(q.body, q.author, q.image_url)
         );

@@ -4,7 +4,7 @@ config = {
   DISCORD_TOKEN: process.env.DISCORD_TOKEN,
   AIRTABLE_API_KEY: process.env.AT_KEY,
   AIRTABLE_BASE: process.env.AT_BASE,
-  Q_FREQUENCY: "30 * * * * *",
+  Q_FREQUENCY: "/10 * * * * *",
   // Q_FREQUENCY: "* 30 18 * * *",
   QOTD_CHANNEL_ID: process.env.QOTD_CHANNEL_ID,
   BOT_DISPLAY_NAME: "QOTD-Bot",
