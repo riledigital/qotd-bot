@@ -90,6 +90,12 @@ class SimpleQotd extends Discord.Client {
       this.cronDaily = schedule.scheduleJob(config.Q_FREQUENCY, () => {
         this.cronRunQotd();
       });
+      console.log(
+        `Next scheduled QOTD is on ${this.cronDaily.nextInvocation()}`
+      );
+      this.getQotdChannel().send(
+        `Next scheduled QOTD is on ${this.cronDaily.nextInvocation()}`
+      );
     }
   }
 
@@ -132,6 +138,46 @@ class SimpleQotd extends Discord.Client {
         });
       }
     );
+  }
+
+  handleResume(msg) {
+    msg.reply("👌🟢 Starting QOTD... run !resume to resume questions.");
+    console.log("Starting QOTD...");
+    client.scheduleCronTest();
+  }
+
+  handleSubmit(msg) {
+    msg.reply(
+      `Here's the form for submitting questions: ${config.QUESTION_FORM_LINK}`
+    );
+  }
+
+  handlePause(msg) {
+    msg.reply("✋🛑 Pausing QOTD... run !resume to resume questions.");
+    console.log("Pausing QOTD...");
+    client.cronDaily.cancel();
+  }
+
+  run() {
+    this.getQotdChannel().send("QOTD-Bot deployed and ready to go!");
+    this.scheduleCronTest();
+    this.on("message", (msg) => {
+      // console.log(msg);
+
+      if (msg.channel.id === config.QOTD_CHANNEL_ID) {
+        if (msg.content === "!submit") {
+          this.handleSubmit(msg);
+        }
+
+        if (msg.content === "!resume") {
+          this.handleResume(msg);
+        }
+
+        if (msg.content === "!pause") {
+          this.handlePause(msg);
+        }
+      }
+    });
   }
 
   getAirtableQuestion() {
