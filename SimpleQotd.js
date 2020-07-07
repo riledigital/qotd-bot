@@ -182,10 +182,11 @@ class SimpleQotd extends Discord.Client {
 
   getAirtableQuestion() {
     return new Promise((resolve, reject) => {
+      let recordsTofetch = 50;
       this.base("questions")
         .select({
           // Selecting the first 3 records in grid:
-          maxRecords: 2,
+          maxRecords: recordsTofetch,
           view: "grid",
           // Only get unused questions
           filterByFormula: "has_used = 0",

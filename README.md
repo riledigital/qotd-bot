@@ -23,7 +23,7 @@ The bot will read from a config.js file [per the Discord.js guide.](https://disc
 
 # Checkpoints
 
-[ ] Load setup and config keys/preferences for bot
+[x] Load setup and config keys/preferences for bot
 
 - Airtable key
 - Discord key
@@ -37,16 +37,17 @@ The bot will read from a config.js file [per the Discord.js guide.](https://disc
 
 ### Discord functions
 
-[ ] Create embed message
-[ ] Send any message to the QOTD channel
+[x] Create embed message
+[x] Send any message to the QOTD channel
+[ ] Schedule message sending by cron syntax
 
 ### Airtable functions
 
 [ ] Get question from Airtable
 
-- Fetch 3 records WHERE date_used IS null
-- Pick a random of the 3
-  [ ] Update the date for a record to current date/time
+- Fetch /n/ records WHERE date_used IS null
+- Pick a random of /n/
+  [x] Update the date for a record to current date/time
   [ ]
 
 # Test cases
