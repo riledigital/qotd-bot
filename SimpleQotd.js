@@ -143,7 +143,7 @@ class SimpleQotd extends Discord.Client {
   handleResume(msg) {
     msg.reply("👌🟢 Starting QOTD... run !resume to resume questions.");
     console.log("Starting QOTD...");
-    client.scheduleCronTest();
+    this.scheduleCronTest();
   }
 
   handleSubmit(msg) {
@@ -155,7 +155,7 @@ class SimpleQotd extends Discord.Client {
   handlePause(msg) {
     msg.reply("✋🛑 Pausing QOTD... run !resume to resume questions.");
     console.log("Pausing QOTD...");
-    client.cronDaily.cancel();
+    this.cronDaily.cancel();
   }
 
   getAirtableQuestion() {
