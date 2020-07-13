@@ -93,9 +93,9 @@ class SimpleQotd extends Discord.Client {
       let estTime = this.cronDaily.nextInvocation().toLocaleString("en-US", {
         timeZone: "America/New_York",
       });
-      let fmtTime = new Date(estTime).toISOString();
-      console.log(`Next scheduled QOTD is on ${fmtTime}`);
-      this.getQotdChannel().send(`Next scheduled QOTD is on ${fmtTime}`);
+      // let fmtTime = new Date(estTime).toISOString();
+      console.log(`Next scheduled QOTD is on ${estTime}`);
+      this.getQotdChannel().send(`Next scheduled QOTD is on ${estTime}`);
     }
   }
 
