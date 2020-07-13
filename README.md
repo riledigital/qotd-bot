@@ -18,8 +18,17 @@ QB compiles responses from respondents and persists them to a separate Airtable 
 The bot will read from a config.js file [per the Discord.js guide.](https://discordjs.guide/creating-your-bot/configuration-files.html)
 
 - Get the Discord Token from [the Discord Developers site](https://discord.com/developers/applications)
-- Get the guild ID from Discord UI, [enable Developer View](https://discord.com/developers/docs/intro)
+- Get the guild ID from the Discord UI, [enable Developer View](https://discord.com/developers/docs/intro)
 - Get the Airtable keys from the [Airtable API docs](https://airtable.com/api)
+
+## Configuration
+
+The configuration exists in two places: `.env` for secrets, and `config.js` for other options.
+
+| Option            | Default         | Description                                                                                                                |
+| ----------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `Q_FREQUENCY`     | `* 30 10 * * *` | The schedule to send out QOTD's, in `cron` format. This is in UTC, so use a time zone converter to get the right schedule. |
+| `QOTD_CHANNEL_ID` | `null`          | The default Channel ID to send QOTD's to. Use the Discord dev tools to copy the Channel ID.                                |
 
 # Checkpoints
 

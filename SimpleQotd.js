@@ -158,28 +158,6 @@ class SimpleQotd extends Discord.Client {
     client.cronDaily.cancel();
   }
 
-  run() {
-    this.getQotdChannel().send("QOTD-Bot deployed and ready to go!");
-    this.scheduleCronTest();
-    this.on("message", (msg) => {
-      // console.log(msg);
-
-      if (msg.channel.id === config.QOTD_CHANNEL_ID) {
-        if (msg.content === "!submit") {
-          this.handleSubmit(msg);
-        }
-
-        if (msg.content === "!resume") {
-          this.handleResume(msg);
-        }
-
-        if (msg.content === "!pause") {
-          this.handlePause(msg);
-        }
-      }
-    });
-  }
-
   getAirtableQuestion() {
     return new Promise((resolve, reject) => {
       let recordsTofetch = 50;

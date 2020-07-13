@@ -14,7 +14,37 @@ client.once("ready", () => {
   // client.taskSendQotd();
   // let urlTest = client.getMemberAvatarUrl("322095868373106689");
   // console.log(urlTest);
-  client.run();
+  client.getQotdChannel().send("QOTD-Bot deployed and ready to go!");
+  client.scheduleCronTest();
+  client.on("message", (msg) => {
+    // console.log(msg);
+
+    if (msg.channel.id === config.QOTD_CHANNEL_ID) {
+      if (msg.content === "!submit") {
+        client.handleSubmit(msg);
+      }
+
+      if (msg.content === "!resume") {
+        client.handleResume(msg);
+      }
+
+      if (msg.content === "!pause") {
+        client.handlePause(msg);
+      }
+    }
+  });
 });
 
+// client.commands = new Discord.Collection();
+// const commandFiles = fs
+//   .readdirSync("./commands")
+//   .filter((file) => file.endsWith(".js"));
+// for (const file of commandFiles) {
+//   const command = require(`./commands/${file}`);
+
+//   // set a new item in the Collection
+//   // with the key as the command name and the value as the exported module
+//   console.log(`Loaded command file: ${file}`);
+//   client.commands.set(command.name, command);
+// }
 client.login(config.DISCORD_TOKEN);

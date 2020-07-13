@@ -7,7 +7,7 @@
     {
       "name": "Launch via NPM - Simplestart",
       "request": "launch",
-      "runtimeArgs": ["run-script", "simplestart"],
+      "runtimeArgs": ["run-script", "start"],
       "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
       "type": "pwa-node"
