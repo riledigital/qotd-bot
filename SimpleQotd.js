@@ -90,12 +90,12 @@ class SimpleQotd extends Discord.Client {
       this.cronDaily = schedule.scheduleJob(config.Q_FREQUENCY, () => {
         this.cronRunQotd();
       });
-      console.log(
-        `Next scheduled QOTD is on ${this.cronDaily.nextInvocation()}`
-      );
-      this.getQotdChannel().send(
-        `Next scheduled QOTD is on ${this.cronDaily.nextInvocation()}`
-      );
+      let estTime = this.cronDaily.nextInvocation().toLocaleString("en-US", {
+        timeZone: "America/New_York",
+      });
+      let fmtTime = new Date(estTime).toISOString();
+      console.log(`Next scheduled QOTD is on ${fmtTime}`);
+      this.getQotdChannel().send(`Next scheduled QOTD is on ${fmtTime}`);
     }
   }
 
