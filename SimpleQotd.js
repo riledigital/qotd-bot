@@ -140,22 +140,34 @@ class SimpleQotd extends Discord.Client {
     );
   }
 
-  handleResume(msg) {
-    msg.reply("👌🟢 Starting QOTD... run !resume to resume questions.");
-    console.log("Starting QOTD...");
-    this.scheduleCronTest();
-  }
+  handleCommand(msg, triggerWord) {
+    let estTime = this.cronDaily.nextInvocation().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
 
-  handleSubmit(msg) {
-    msg.reply(
-      `Here's the form for submitting questions: ${config.QUESTION_FORM_LINK}`
-    );
-  }
+    if (triggerWord == "!status") {
+      msg.reply(`Next invocation is: ${estTime}`);
+    }
 
-  handlePause(msg) {
-    msg.reply("✋🛑 Pausing QOTD... run !resume to resume questions.");
-    console.log("Pausing QOTD...");
-    this.cronDaily.cancel();
+    if (triggerWord == "!resume") {
+      msg.reply("👌🟢 Starting QOTD... run !resume to resume questions.");
+      console.log("Starting QOTD...");
+      this.scheduleCronTest();
+    }
+
+    if (triggerWord == "!submit") {
+      msg.reply(
+        `Here's the form for submitting questions: ${config.QUESTION_FORM_LINK}`
+      );
+    }
+
+    if (triggerWord === "!pause") {
+      msg.reply("✋🛑 Pausing QOTD... run !resume to resume questions.");
+      console.log("Pausing QOTD...");
+      this.cronDaily.cancel();
+    } else {
+      return null;
+    }
   }
 
   getAirtableQuestion() {

@@ -20,17 +20,7 @@ client.once("ready", () => {
     // console.log(msg);
 
     if (msg.channel.id === config.QOTD_CHANNEL_ID) {
-      if (msg.content === "!submit") {
-        client.handleSubmit(msg);
-      }
-
-      if (msg.content === "!resume") {
-        client.handleResume(msg);
-      }
-
-      if (msg.content === "!pause") {
-        client.handlePause(msg);
-      }
+      client.handleCommand(msg, msg.content);
     }
   });
 });
