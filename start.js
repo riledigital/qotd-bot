@@ -15,7 +15,7 @@ client.once("ready", () => {
   // let urlTest = client.getMemberAvatarUrl("322095868373106689");
   // console.log(urlTest);
   client.getQotdChannel().send("QOTD-Bot deployed and ready to go!");
-  client.scheduleCronTest();
+  client.scheduleCronDaily();
   client.on("message", (msg) => {
     // console.log(msg);
 

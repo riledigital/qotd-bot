@@ -6,14 +6,26 @@ QB uses Airtable as a database for persistence, storing records of when question
 
 QB compiles responses from respondents and persists them to a separate Airtable base, and generates a bi-weekly zine site for fun memories!
 
-# Requirements
+# Commands
+
+| Command Trigger | Description |
+| ---- | ---- |
+| `!pause` | Temporarily stops qotd prompts. |
+| `!skip` | Reroll for another question. This consumes the previous question in the database. |
+| ---- | ---- |
+| ---- | ---- |
+
+| ---- | ---- |
+
+
+# Setup
+
+## Requirements
 
 - Node.js >14.4.0
 - Discord developer key
 - Airtable developer key
 - A pre-configured Airtable base
-
-# Setup
 
 The bot will read from a config.js file [per the Discord.js guide.](https://discordjs.guide/creating-your-bot/configuration-files.html)
 

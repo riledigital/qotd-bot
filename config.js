@@ -7,7 +7,7 @@ config = {
 
   // Q_FREQUENCY: "* * * * * *",
   // Note that this is UTC/GMT time
-  Q_FREQUENCY: "49 15 * * *",
+  Q_FREQUENCY: "30 * * * * *",
   QOTD_CHANNEL_ID: process.env.QOTD_CHANNEL_ID,
   BOT_DISPLAY_NAME: "QOTD-Bot",
   QUESTION_FORM_LINK: process.env.QUESTION_FORM_LINK,

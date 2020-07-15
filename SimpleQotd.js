@@ -19,6 +19,8 @@ class SimpleQotd extends Discord.Client {
     });
     this.base = Airtable.base(config.AIRTABLE_BASE);
     this.cronDaily;
+    this.lastQuestion;
+    this.paused = false;
   }
 
   getMemberAvatarUrl(memberId) {
@@ -85,18 +87,17 @@ class SimpleQotd extends Discord.Client {
     }
   }
 
-  scheduleCronTest() {
-    if (!this.cronDaily) {
-      this.cronDaily = schedule.scheduleJob(config.Q_FREQUENCY, () => {
-        this.cronRunQotd();
-      });
-      let estTime = this.cronDaily.nextInvocation().toLocaleString("en-US", {
-        timeZone: "America/New_York",
-      });
-      // let fmtTime = new Date(estTime).toISOString();
-      console.log(`Next scheduled QOTD is on ${estTime}`);
-      this.getQotdChannel().send(`Next scheduled QOTD is on ${estTime}`);
-    }
+  scheduleCronDaily() {
+    console.log("Starting QOTD...");
+    this.cronDaily = schedule.scheduleJob(config.Q_FREQUENCY, () => {
+      this.cronRunQotd();
+    });
+    let estTime = this.cronDaily.nextInvocation().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    });
+    // let fmtTime = new Date(estTime).toISOString();
+    console.log(`Next scheduled QOTD is on ${estTime}`);
+    this.getQotdChannel().send(`Next scheduled QOTD is on ${estTime}`);
   }
 
   getQotdChannel() {
@@ -140,19 +141,72 @@ class SimpleQotd extends Discord.Client {
     );
   }
 
-  handleCommand(msg, triggerWord) {
-    let estTime = this.cronDaily.nextInvocation().toLocaleString("en-US", {
-      timeZone: "America/New_York",
-    });
+  updateRecordSkipped(id) {
+    console.log(`Skipped qusetion ${id}`);
+    this.base("questions").update(
+      [
+        {
+          id: id,
+          fields: {
+            skipped: true,
+          },
+        },
+      ],
+      function (err, records) {
+        if (err) {
+          console.log(err);
+          return;
+        }
 
-    if (triggerWord == "!status") {
-      msg.reply(`Next invocation is: ${estTime}`);
+        records.forEach(function (record) {
+          console.log(
+            `Updated record ${record.get("question_id")} with ${record.get(
+              "date_posted"
+            )}`
+          );
+        });
+      }
+    );
+  }
+
+  getNextTime() {
+    try {
+      let preTime = this.cronDaily.nextInvocation();
+      let estTime = this.cronDaily.nextInvocation().toLocaleString("en-US", {
+        timeZone: "America/New_York",
+      });
+      return preTime;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  handleCommand(msg, triggerWord) {
+    // let preTime, estTime;
+
+    if (triggerWord == "!help") {
+      let msgIntro = `I am ${config.BOT_DISPLAY_NAME}! 
+      You can submit questions through the form located at ${config.QUESTION_FORM_LINK}! 
+      If you are looking for my code or available commands, they are available at 
+      https://github.com/rl2999/qotd-bot.
+      If you have any questions about me, ask my creator Ri!
+      `;
+      msg.reply(msgIntro);
     }
 
-    if (triggerWord == "!resume") {
-      msg.reply("👌🟢 Starting QOTD... run !resume to resume questions.");
-      console.log("Starting QOTD...");
-      this.scheduleCronTest();
+    if (triggerWord == "!status") {
+      msg.reply(`Next invocation is: ${this.cronDaily.nextInvocation()}`);
+    }
+
+    if (triggerWord == "!skip") {
+      msg.reply("Skipping this question... here's another one:");
+      try {
+        this.updateRecordSkipped(this.lastQuestion.get("question_id"));
+      } catch (e) {
+        console.log(`Error: ${e}`);
+      }
+
+      this.taskSendQotd();
     }
 
     if (triggerWord == "!submit") {
@@ -161,13 +215,33 @@ class SimpleQotd extends Discord.Client {
       );
     }
 
-    if (triggerWord === "!pause") {
-      msg.reply("✋🛑 Pausing QOTD... run !resume to resume questions.");
-      console.log("Pausing QOTD...");
-      this.cronDaily.cancel();
-    } else {
-      return null;
+    if (triggerWord == "!resume") {
+      if (this.paused) {
+        this.paused = false;
+        this.scheduleCronDaily();
+        msg.reply(`👌🟢 Starting QOTD... run !pause to pause questions.}`);
+      } else {
+        msg.reply(
+          `QOTD is still running! Next one is at ${this.cronDaily.nextInvocation()}`
+        );
+        return null;
+      }
     }
+
+    if (triggerWord === "!pause") {
+      if (this.paused) {
+        msg.reply(`Already paused. Type !resume to continue QOTD.`);
+        return null;
+      } else {
+        this.paused = true;
+        msg.reply("✋🛑 Pausing QOTD... run !resume to resume questions.");
+        this.scheduleCronStop();
+      }
+    }
+  }
+
+  collectResponse() {
+    let responseTo = this.lastQuestion.get("question_id");
   }
 
   getAirtableQuestion() {
@@ -197,7 +271,9 @@ class SimpleQotd extends Discord.Client {
               let index = Math.floor(Math.random() * (records.length - 1));
               let theRecord = records[index];
               this.updateRecordUsed(theRecord.get("question_id"));
+
               // return theRecord.fields;
+              this.lastQuestion = theRecord;
               resolve(theRecord.fields);
               // To fetch the next page of records, call `fetchNextPage`.
               // If there are more records, `page` will get called again.
