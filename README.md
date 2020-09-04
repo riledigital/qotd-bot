@@ -8,15 +8,14 @@ QB compiles responses from respondents and persists them to a separate Airtable 
 
 # Commands
 
-| Command Trigger | Description |
-| ---- | ---- |
-| `!pause` | Temporarily stops qotd prompts. |
-| `!skip` | Reroll for another question. This consumes the previous question in the database. |
-| ---- | ---- |
-| ---- | ---- |
+| Command Trigger | Description                                                                       |
+| --------------- | --------------------------------------------------------------------------------- |
+| `!pause`        | Temporarily stops qotd prompts.                                                   |
+| `!skip`         | Reroll for another question. This consumes the previous question in the database. |
+| `!help`         | Shows this repo link and link to Airtable base                                    |
+| ----            | ----                                                                              |
 
 | ---- | ---- |
-
 
 # Setup
 

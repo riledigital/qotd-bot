@@ -14,7 +14,11 @@ client.once("ready", () => {
   // client.taskSendQotd();
   // let urlTest = client.getMemberAvatarUrl("322095868373106689");
   // console.log(urlTest);
-  client.getQotdChannel().send("QOTD-Bot deployed and ready to go!");
+  client
+    .getQotdChannel()
+    .send(
+      `QOTD-Bot deployed and ready to go! Bot version: ${process.env.npm_package_version}`
+    );
   client.scheduleCronDaily();
   client.on("message", (msg) => {
     // console.log(msg);
