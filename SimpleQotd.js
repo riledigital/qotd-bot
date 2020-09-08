@@ -1,5 +1,3 @@
-var environment = process.env.NODE_ENV;
-
 // CRON STUFF 4 LATER
 var schedule = require("node-schedule");
 const envs = require("dotenv").config();
@@ -97,7 +95,9 @@ class SimpleQotd extends Discord.Client {
     });
     // let fmtTime = new Date(estTime).toISOString();
     console.log(`Next scheduled QOTD is on ${estTime}`);
-    this.getQotdChannel().send(`Next scheduled QOTD is on ${estTime}`);
+    if (process.env.NODE_ENV !== "production") {
+      this.getQotdChannel().send(`Next scheduled QOTD is on ${estTime}`);
+    }
   }
 
   getQotdChannel() {
