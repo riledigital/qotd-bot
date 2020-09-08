@@ -86,7 +86,6 @@ class SimpleQotd extends Discord.Client {
   }
 
   scheduleCronDaily() {
-    console.log("Starting QOTD...");
     this.cronDaily = schedule.scheduleJob(config.Q_FREQUENCY, () => {
       this.cronRunQotd();
     });
@@ -94,8 +93,9 @@ class SimpleQotd extends Discord.Client {
       timeZone: "America/New_York",
     });
     // let fmtTime = new Date(estTime).toISOString();
+    console.log("Starting QOTD...");
     console.log(`Next scheduled QOTD is on ${estTime}`);
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV === "dev") {
       this.getQotdChannel().send(`Next scheduled QOTD is on ${estTime}`);
     }
   }

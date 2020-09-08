@@ -14,7 +14,7 @@ client.once("ready", () => {
   // client.taskSendQotd();
   // let urlTest = client.getMemberAvatarUrl("322095868373106689");
   // console.log(urlTest);
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV === "dev") {
     client
       .getQotdChannel()
       .send(
