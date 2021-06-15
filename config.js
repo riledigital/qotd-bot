@@ -1,4 +1,5 @@
 const envs = require("dotenv").config();
+
 // CommonJS
 config = {
   DISCORD_TOKEN: process.env.DISCORD_TOKEN,

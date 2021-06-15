@@ -3,9 +3,6 @@ var schedule = require("node-schedule");
 const envs = require("dotenv").config();
 const Discord = require("discord.js");
 const Airtable = require("airtable");
-
-// CLASS DEFINITION
-
 class SimpleQotd extends Discord.Client {
   constructor(config) {
     super(config);
@@ -19,13 +16,6 @@ class SimpleQotd extends Discord.Client {
     this.cronDaily;
     this.lastQuestion;
     this.paused = false;
-  }
-
-  getMemberAvatarUrl(memberId) {
-    // this.users.cache.fetch(memberId).then((user) => {
-    //   return user.avatarURL();
-    // });
-    return;
   }
 
   static questionAsEmbed(q, author = config.BOT_DISPLAY_NAME, imgUrl) {
@@ -188,7 +178,7 @@ class SimpleQotd extends Discord.Client {
       let msgIntro = `I am ${config.BOT_DISPLAY_NAME}! 
       You can submit questions through the form located at ${config.QUESTION_FORM_LINK}! 
       If you are looking for my code or available commands, they are available at 
-      https://github.com/rl2999/qotd-bot.
+      https://github.com/riledigital/qotd-bot.
       If you have any questions about me, ask my creator Ri!
       `;
       msg.reply(msgIntro);
