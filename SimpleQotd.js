@@ -173,59 +173,59 @@ class SimpleQotd extends Discord.Client {
 
   handleCommand(msg, triggerWord) {
     // let preTime, estTime;
-
-    if (triggerWord == "!help") {
-      let msgIntro = `I am ${config.BOT_DISPLAY_NAME}! 
+    switch (triggerWord) {
+      case "!help": {
+        let msgIntro = `I am ${config.BOT_DISPLAY_NAME}! 
       You can submit questions through the form located at ${config.QUESTION_FORM_LINK}! 
       If you are looking for my code or available commands, they are available at 
       https://github.com/riledigital/qotd-bot.
       If you have any questions about me, ask my creator Ri!
       `;
-      msg.reply(msgIntro);
-    }
+        msg.reply(msgIntro);
+      }
+      case "!status": {
+        msg.reply(`Next invocation is: ${this.cronDaily.nextInvocation()}`);
+      }
+      case "!skip": {
+        msg.reply("Skipping this question... here's another one:");
+        try {
+          this.updateRecordSkipped(this.lastQuestion.get("question_id"));
+        } catch (e) {
+          console.log(`Error: ${e}`);
+        }
 
-    if (triggerWord == "!status") {
-      msg.reply(`Next invocation is: ${this.cronDaily.nextInvocation()}`);
-    }
-
-    if (triggerWord == "!skip") {
-      msg.reply("Skipping this question... here's another one:");
-      try {
-        this.updateRecordSkipped(this.lastQuestion.get("question_id"));
-      } catch (e) {
-        console.log(`Error: ${e}`);
+        this.taskSendQotd();
+      }
+      case "!resume": {
+        if (this.paused) {
+          this.paused = false;
+          this.scheduleCronDaily();
+          msg.reply(`👌🟢 Starting QOTD... run !pause to pause questions.}`);
+        } else {
+          msg.reply(
+            `QOTD is still running! Next one is at ${this.cronDaily.nextInvocation()}`
+          );
+          return null;
+        }
       }
 
-      this.taskSendQotd();
-    }
-
-    if (triggerWord == "!submit") {
-      msg.reply(
-        `Here's the form for submitting questions: ${config.QUESTION_FORM_LINK}`
-      );
-    }
-
-    if (triggerWord == "!resume") {
-      if (this.paused) {
-        this.paused = false;
-        this.scheduleCronDaily();
-        msg.reply(`👌🟢 Starting QOTD... run !pause to pause questions.}`);
-      } else {
+      case "!submit": {
         msg.reply(
-          `QOTD is still running! Next one is at ${this.cronDaily.nextInvocation()}`
+          `Here's the form for submitting questions: ${config.QUESTION_FORM_LINK}`
         );
-        return null;
       }
-    }
 
-    if (triggerWord === "!pause") {
-      if (this.paused) {
-        msg.reply(`Already paused. Type !resume to continue QOTD.`);
-        return null;
-      } else {
-        this.paused = true;
-        msg.reply("✋🛑 Pausing QOTD... run !resume to resume questions.");
-        this.scheduleCronStop();
+      case "!pause": {
+        if (this.paused) {
+          msg.reply(`Already paused. Type !resume to continue QOTD.`);
+          return null;
+        } else {
+          this.paused = true;
+          msg.reply("✋🛑 Pausing QOTD... run !resume to resume questions.");
+          this.scheduleCronStop();
+        }
+      }
+      default: {
       }
     }
   }
