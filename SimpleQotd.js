@@ -1,5 +1,4 @@
-// CRON STUFF 4 LATER
-var schedule = require("node-schedule");
+const schedule = require("node-schedule");
 const envs = require("dotenv").config();
 const Discord = require("discord.js");
 const Airtable = require("airtable");
@@ -182,9 +181,11 @@ class SimpleQotd extends Discord.Client {
       If you have any questions about me, ask my creator Ri!
       `;
         msg.reply(msgIntro);
+        break;
       }
       case "!status": {
         msg.reply(`Next invocation is: ${this.cronDaily.nextInvocation()}`);
+        break;
       }
       case "!skip": {
         msg.reply("Skipping this question... here's another one:");
@@ -195,17 +196,20 @@ class SimpleQotd extends Discord.Client {
         }
 
         this.taskSendQotd();
+        break;
       }
       case "!resume": {
         if (this.paused) {
           this.paused = false;
           this.scheduleCronDaily();
           msg.reply(`👌🟢 Starting QOTD... run !pause to pause questions.}`);
+          break;
         } else {
           msg.reply(
             `QOTD is still running! Next one is at ${this.cronDaily.nextInvocation()}`
           );
           return null;
+          break;
         }
       }
 
@@ -213,6 +217,7 @@ class SimpleQotd extends Discord.Client {
         msg.reply(
           `Here's the form for submitting questions: ${config.QUESTION_FORM_LINK}`
         );
+        break;
       }
 
       case "!pause": {
@@ -224,6 +229,7 @@ class SimpleQotd extends Discord.Client {
           msg.reply("✋🛑 Pausing QOTD... run !resume to resume questions.");
           this.scheduleCronStop();
         }
+        break;
       }
       default: {
       }
