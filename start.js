@@ -6,9 +6,10 @@ const client = new SimpleQotd(config);
 client.once("ready", () => {
   switch (process.env.NODE_ENV) {
     case "dev": {
+      client.scheduleCronDaily();
       // Ping the channel
       client
-        .getQotdChannel()
+      .getQotdChannel()
         .send(
           `QOTD-Bot deployed and ready to go! Bot version: ${process.env.npm_package_version}`
         );
