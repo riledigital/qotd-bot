@@ -5,18 +5,18 @@ const Airtable = require('airtable');
 class SimpleQotd extends Discord.Client {
   constructor (config) {
     super(config);
-    this.config = {};
+    this.config = config;
     Airtable.configure({
       endpointUrl: 'https://api.airtable.com',
       apiKey: config.AIRTABLE_API_KEY
     });
-    this.base = Airtable.base(config.AIRTABLE_BASE);
+    this.base = Airtable.base(this.config.AIRTABLE_BASE);
     this.cronDaily = '';
     this.lastQuestion = null;
     this.paused = false;
   }
 
-  static questionAsEmbed (q, author = this.config.BOT_DISPLAY_NAME, imgUrl) {
+  questionAsEmbed (q, author = this.config.BOT_DISPLAY_NAME, imgUrl) {
     // inside a command, event listener, etc.
     const exampleEmbed = new Discord.MessageEmbed()
       .setColor('#ffff00')
@@ -37,7 +37,7 @@ class SimpleQotd extends Discord.Client {
       .then((q) => {
         // console.log(q);
         this.getQotdChannel().send(
-          SimpleQotd.questionAsEmbed(q.body, q.author, q.image_url)
+          this.questionAsEmbed(q.body, q.author, q.image_url)
         );
       })
       .catch((e) => {
@@ -61,7 +61,7 @@ class SimpleQotd extends Discord.Client {
 
   cronRunQotd () {
     // This is run on a schedule...
-    console.log(`Running cron with ${config.Q_FREQUENCY}`);
+    console.log(`Running cron with ${this.config.Q_FREQUENCY}`);
     // Fetch + send the message
     this.taskSendQotd();
   }
@@ -74,7 +74,7 @@ class SimpleQotd extends Discord.Client {
   }
 
   scheduleCronDaily () {
-    this.cronDaily = schedule.scheduleJob(config.Q_FREQUENCY, () => {
+    this.cronDaily = schedule.scheduleJob(this.config.Q_FREQUENCY, () => {
       this.cronRunQotd();
     });
     const estTime = this.cronDaily.nextInvocation().toLocaleString('en-US', {
@@ -90,14 +90,14 @@ class SimpleQotd extends Discord.Client {
 
   getQotdChannel () {
     // return this.channels
-    //   .fetch(config.QOTD_CHANNEL_ID)
+    //   .fetch(this.config.QOTD_CHANNEL_ID)
     //   .then((channel) => channel)
     //   .catch(console.error);
-    return this.channels.cache.get(config.QOTD_CHANNEL_ID);
+    return this.channels.cache.get(this.config.QOTD_CHANNEL_ID);
   }
 
   getQotdUsers () {
-    const chan = this.channels.cache.get(config.QOTD_CHANNEL_ID);
+    const chan = this.channels.cache.get(this.config.QOTD_CHANNEL_ID);
     // Currently returns non-bots
     return chan.members.filter((x) => !x.user.bot);
   }
@@ -173,8 +173,7 @@ class SimpleQotd extends Discord.Client {
     // let preTime, estTime;
     switch (triggerWord) {
       case '!help': {
-        const msgIntro = `I am ${config.BOT_DISPLAY_NAME}! 
-      You can submit questions through the form located at ${config.QUESTION_FORM_LINK}! 
+        const msgIntro = `You can submit questions through the form located at ${this.config.QUESTION_FORM_LINK}! 
       If you are looking for my code or available commands, they are available at 
       https://github.com/riledigital/qotd-bot.
       If you have any questions about me, ask my creator Ri!
@@ -214,7 +213,7 @@ class SimpleQotd extends Discord.Client {
 
       case '!submit': {
         msg.reply(
-          `Here's the form for submitting questions: ${config.QUESTION_FORM_LINK}`
+          `Here's the form for submitting questions: ${this.config.QUESTION_FORM_LINK}`
         );
         break;
       }
@@ -265,12 +264,12 @@ class SimpleQotd extends Discord.Client {
                 // this.updateRecordUsed(recId);
               });
               const index = Math.floor(Math.random() * (records.length - 1));
-              const theRecord = records[index];
-              this.updateRecordUsed(theRecord.get('question_id'));
+              const theRecord = records[index]?.fields;
+              this.updateRecordUsed(theRecord.question_id);
 
               // return theRecord.fields;
-              this.lastQuestion = theRecord;
-              resolve(theRecord.fields);
+              this.lastQuestion = theRecord.fields;
+              resolve(theRecord);
               // To fetch the next page of records, call `fetchNextPage`.
               // If there are more records, `page` will get called again.
               // If there are no more records, `done` will get called.
