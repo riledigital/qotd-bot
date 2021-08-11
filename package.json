@@ -1,6 +1,6 @@
 {
   "name": "qotd-bot",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "engines": {
     "node": "16.x",
     "npm": "*"
@@ -9,7 +9,7 @@
   "scripts": {
     "test": "mocha --debug-brk",
     "start": "if-env NODE_ENV=production ?? npm run start:prod || npm run start:dev",
-    "start:dev": "nodenv index.js -f",
+    "start:dev": "node index.js",
     "start:prod": "node index.js"
   },
   "author": "",
