@@ -147,7 +147,7 @@ class SimpleQotd extends Discord.Client {
         break;
       }
       case '!status': {
-        msg.reply(`Next invocation is: ${this.cronDaily.nextInvocation()}. Status page: ${this.statusPageUrl}`);
+        msg.reply(`Next invocation is: ${this.cronDaily.nextInvocation()}. Status page: ${this.config.PUBLIC_URL}`);
         break;
       }
       case '!skip': {
