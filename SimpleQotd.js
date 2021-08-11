@@ -32,6 +32,7 @@ class SimpleQotd extends Discord.Client {
       context: {
         status: 'QOTD is live and listening.',
         test: 'testing',
+        nextInvocation: this.cronDaily.nextInvocation(),
         paused: this.paused,
         lastQuestion: this.lastQuestion
       }
@@ -40,9 +41,10 @@ class SimpleQotd extends Discord.Client {
 
   taskSendQotd () {
     this.getAirtableQuestion(this.base)
-      .then((q) => {
+      .then((record) => {
+        const { body, author, imageUrl } = record.fields;
         this.sendToChannel(
-          questionAsEmbed(q.body, q.author, q.image_url)
+          questionAsEmbed(body, author, imageUrl || 'http://placekitten.com/50/50')
         );
       })
       .catch((e) => {
@@ -145,7 +147,7 @@ class SimpleQotd extends Discord.Client {
         break;
       }
       case '!status': {
-        msg.reply(`Next invocation is: ${this.cronDaily.nextInvocation()}`);
+        msg.reply(`Next invocation is: ${this.cronDaily.nextInvocation()}. Status page: ${this.statusPageUrl}`);
         break;
       }
       case '!skip': {
@@ -154,10 +156,9 @@ class SimpleQotd extends Discord.Client {
           if (this.lastQuestion) {
             this.updateRecordSkipped(this.lastQuestion.get('question_id'));
           }
-        } catch (e) {
-          console.log(`Error: ${e}`);
+        } catch (err) {
+          console.error(err);
         }
-
         this.taskSendQotd();
         break;
       }
@@ -212,7 +213,7 @@ class SimpleQotd extends Discord.Client {
       base('questions')
         .select({
           // Selecting the first 3 records in grid:
-          maxRecords: 10,
+          maxRecords: 3,
           view: 'grid',
           // Only get unused questions
           filterByFormula: 'has_used = 0'
@@ -249,7 +250,7 @@ const questionAsEmbed = (q, author, imgUrl) => {
     .setTitle('Question of the Day')
     .setAuthor(
       author,
-      // imgUrl,
+      imgUrl,
       'http://github.com/riledigital/qotd-bot/'
     )
     .setDescription(q + ' @everyone')
