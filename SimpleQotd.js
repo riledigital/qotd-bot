@@ -24,6 +24,15 @@ class SimpleQotd extends Discord.Client {
       .catch(err => console.log(err));
   }
 
+  statusUpdater () {
+    // Passed to the status web server
+    return {
+      status: 'running...',
+      paused: this.paused,
+      lastQuestion: this.lastQuestion
+    };
+  }
+
   taskSendQotd () {
     this.getAirtableQuestion(this.base)
       .then((q) => {

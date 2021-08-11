@@ -1,23 +1,43 @@
 const express = require('express');
 const nunjucks = require('nunjucks');
 
-const app = express();
-const port = 80;
+class StatusServer {
+  constructor () {
+    const app = express();
+    const port = 80;
 
-nunjucks.configure('templates', {
-  autoescape: true,
-  express: app
-});
+    nunjucks.configure('templates', {
+      autoescape: true,
+      express: app
+    });
 
-app.get('/', function (req, res) {
-  const context = {
-    status: 'running'
-  };
-  res.render('index.html', context);
-});
+    app.get('/', (req, res) => {
+      // call getContext
+      res.render('index.html', this.getContext());
+    });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+    app.listen(port, () => {
+      console.log(`Example app listening at http://localhost:${port}`);
+    });
+  }
 
-module.exports = app;
+  getContext () {
+    // the bot should override this function to update the server context.
+    const defaultContext = {
+      status: 'Setting up...'
+    };
+    return defaultContext;
+  }
+
+  setUpdater (func) {
+    this.getContext = func;
+  }
+}
+
+if (require.main === module) {
+  const server = new StatusServer();
+} else {
+  console.log('required as a module');
+}
+
+module.exports = StatusServer;

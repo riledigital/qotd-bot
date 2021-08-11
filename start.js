@@ -1,9 +1,15 @@
 const config = require('./config.js');
 const SimpleQotd = require('./SimpleQotd.js');
+const StatusServer = require('./Web.js');
 
 const client = new SimpleQotd(config);
 
 client.once('ready', () => {
+  // Set up a status server
+  const statusServer = new StatusServer();
+  // Wire up the update function to the web server
+  statusServer.setUpdater(client.statusUpdater);
+
   switch (process.env.NODE_ENV) {
     case 'development': {
       // Ping the channel
