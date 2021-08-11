@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  <head>
+    {% block head %}
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="apple-touch-icon" href="icon.png" />
+    <meta name="theme-color" content="#fafafa" />
+    <style>
+      :root {
+        font-family: sans-serif;
+        font-size: 24px;
+        --c-yellow: rgb(202, 255, 56);
+
+        background-color: var(--c-yellow);
+      }
+
+      .container {
+        max-width: 500px;
+        margin: auto;
+      }
+    </style>
+    {% endblock %}
+  </head>
+
+  <body>
+    {% block content %} {% endblock %}
+  </body>
+</html>
