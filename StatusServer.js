@@ -4,7 +4,8 @@ const config = require('./config');
 class StatusServer {
   constructor () {
     const app = express();
-    const port = config.PORT;
+    // const port = config.PORT;
+    const port = process.env.PORT ?? 3000;
 
     nunjucks.configure('templates', {
       autoescape: true,

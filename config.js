@@ -13,8 +13,7 @@ const config = {
 
   // Status server
   HOSTNAME: '0.0.0.0',
-  PUBLIC_URL: 'https://discord-ask-bot.herokuapp.com/',
-  PORT: 80
+  PUBLIC_URL: 'https://discord-ask-bot.herokuapp.com/
 };
 
 module.exports = config;
