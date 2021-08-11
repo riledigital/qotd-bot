@@ -1,10 +1,10 @@
 const express = require('express');
 const nunjucks = require('nunjucks');
-
+const config = require('./config');
 class StatusServer {
   constructor () {
     const app = express();
-    const port = 8082;
+    const port = config.PORT;
 
     nunjucks.configure('templates', {
       autoescape: true,
