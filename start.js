@@ -1,6 +1,6 @@
 const config = require('./config.js');
 const SimpleQotd = require('./SimpleQotd.js');
-const StatusServer = require('./Web.js');
+const StatusServer = require('./StatusServer.js');
 
 const client = new SimpleQotd(config);
 
