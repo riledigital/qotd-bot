@@ -1,4 +1,21 @@
 const config = require('./config.js');
+
+let envPath = '.env.development';
+
+switch (process.env.NODE_ENV) {
+  case 'production': {
+    envPath = '.env.production';
+    break;
+  }
+
+  case 'development': {
+    envPath = '.env.development';
+    break;
+  }
+}
+
+const envs = require('dotenv').config({ path: envPath });
+
 const SimpleQotd = require('./SimpleQotd.js');
 const StatusServer = require('./StatusServer.js');
 
@@ -12,12 +29,12 @@ client.once('ready', () => {
 
   switch (process.env.NODE_ENV) {
     case 'development': {
-      // Ping the channel
-      client
-        .getQotdChannel()
-        .send(
-          `QOTD-Bot deployed and ready to go! Bot version: ${process.env.npm_package_version}`
-        );
+      // // Ping the channel
+      // client
+      //   .qotdChannel
+      //   .send(
+      //     `QOTD-Bot deployed and ready to go! Bot version: ${process.env.npm_package_version}`
+      //   );
       break;
     }
     case 'production': {

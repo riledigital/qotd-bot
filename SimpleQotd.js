@@ -1,5 +1,5 @@
 const schedule = require('node-schedule');
-const envs = require('dotenv').config();
+
 const Discord = require('discord.js');
 const Airtable = require('airtable');
 
@@ -256,13 +256,13 @@ const updateRecordUsed = function (base, id) {
         }
       }
     ],
-    function (err, records) {
+     (err, records) => {
       if (err) {
         console.log(err);
         return;
       }
 
-      records.forEach(function (record) {
+      records.forEach((record) => {
         console.log(
             `Updated record ${record.get('question_id')} with ${record.get(
               'date_posted'

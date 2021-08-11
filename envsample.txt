@@ -1,7 +1,0 @@
-# rename this to `.env` and fill out the fields. these secrets and preferences get propogated across the app.
-DISCORD_TOKEN=
-GUILD_ID=
-AT_KEY=
-AT_BASE=
-QUESTION_FORM_LINK=
-QOTD_CHANNEL_ID=
