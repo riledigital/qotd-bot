@@ -1,5 +1,5 @@
 const schedule = require('node-schedule');
-const envs = require('dotenv').config();
+
 const Discord = require('discord.js');
 const Airtable = require('airtable');
 
@@ -13,28 +13,45 @@ class SimpleQotd extends Discord.Client {
     });
     this.base = Airtable.base(this.config.AIRTABLE_BASE);
     this.cronDaily = '';
-    this.qotdChannel = null;
     this.lastQuestion = null;
     this.paused = false;
+  }
 
+  sendToChannel (msg) {
     this.channels.fetch(this.config.QOTD_CHANNEL_ID)
       .then(channel => {
-        this.qotdChannel = channel;
+        channel.send(msg);
+        return msg;
       })
       .catch(err => console.log(err));
   }
 
+  statusUpdater () {
+    // Passed to the status web server
+    return {
+      context: {
+        status: 'QOTD is live and listening.',
+        test: 'testing',
+        nextInvocation: this.cronDaily.nextInvocation(),
+        paused: this.paused,
+        lastQuestion: this.lastQuestion
+      }
+    };
+  }
+
   taskSendQotd () {
     this.getAirtableQuestion(this.base)
-      .then((q) => {
-        this.qotdChannel.send(
-          questionAsEmbed(q.body, q.author, q.image_url)
+      .then((record) => {
+        const { body, author, imageUrl } = record.fields;
+        this.sendToChannel(
+          questionAsEmbed(body, author, imageUrl || 'http://placekitten.com/50/50')
         );
       })
       .catch((e) => {
+        console.error(e);
         console.log('No new questions; please send in more!');
         const msg = `There are no new questions. 😥 Please submit more questions at ${this.config.QUESTION_FORM_LINK} 🙏`;
-        this.qotdChannel.send(
+        this.sendToChannel(
           new Discord.MessageEmbed()
             .setColor('#ff0000')
             .setTitle('No new questions!')
@@ -73,7 +90,7 @@ class SimpleQotd extends Discord.Client {
     console.log('Starting QOTD...');
     console.log(`Next scheduled QOTD is on ${estTime}`);
     if (process.env.NODE_ENV === 'dev') {
-      this.qotdChannel.send(`Next scheduled QOTD is on ${estTime}`);
+      this.sendToChannel(`Next scheduled QOTD is on ${estTime}`);
     }
   }
 
@@ -108,9 +125,9 @@ class SimpleQotd extends Discord.Client {
   getNextTime () {
     try {
       const preTime = this.cronDaily.nextInvocation();
-      const estTime = this.cronDaily.nextInvocation().toLocaleString('en-US', {
-        timeZone: 'America/New_York'
-      });
+      // const estTime = this.cronDaily.nextInvocation().toLocaleString('en-US', {
+      //   timeZone: 'America/New_York'
+      // });
       return preTime;
     } catch (e) {
       return null;
@@ -130,17 +147,18 @@ class SimpleQotd extends Discord.Client {
         break;
       }
       case '!status': {
-        msg.reply(`Next invocation is: ${this.cronDaily.nextInvocation()}`);
+        msg.reply(`Next invocation is: ${this.cronDaily.nextInvocation()}. Status page: ${this.statusPageUrl}`);
         break;
       }
       case '!skip': {
         msg.reply("Skipping this question... here's another one:");
         try {
-          this.updateRecordSkipped(this.lastQuestion.get('question_id'));
-        } catch (e) {
-          console.log(`Error: ${e}`);
+          if (this.lastQuestion) {
+            this.updateRecordSkipped(this.lastQuestion.get('question_id'));
+          }
+        } catch (err) {
+          console.error(err);
         }
-
         this.taskSendQotd();
         break;
       }
@@ -183,6 +201,10 @@ class SimpleQotd extends Discord.Client {
     }
   }
 
+  setLastQuestion (data) {
+    this.lastQuestion = data;
+  }
+
   getAirtableQuestion (base) {
     /**
      * Get n questions and return one among them
@@ -191,7 +213,7 @@ class SimpleQotd extends Discord.Client {
       base('questions')
         .select({
           // Selecting the first 3 records in grid:
-          maxRecords: 10,
+          maxRecords: 3,
           view: 'grid',
           // Only get unused questions
           filterByFormula: 'has_used = 0'
@@ -204,9 +226,9 @@ class SimpleQotd extends Discord.Client {
             } else {
               // Pick a random index
               const index = Math.floor(Math.random() * (records.length - 1));
-              const theRecord = records[index]?.fields;
-              updateRecordUsed(base, theRecord.question_id);
-              this.lastQuestion = theRecord.fields;
+              const theRecord = records[index];
+              updateRecordUsed(base, theRecord.id);
+              this.setLastQuestion(theRecord);
               resolve(theRecord);
             }
           },
@@ -221,14 +243,14 @@ class SimpleQotd extends Discord.Client {
   }
 }
 
-const questionAsEmbed = function (q, author, imgUrl) {
+const questionAsEmbed = (q, author, imgUrl) => {
   // inside a command, event listener, etc.
   const exampleEmbed = new Discord.MessageEmbed()
     .setColor('#ffff00')
     .setTitle('Question of the Day')
     .setAuthor(
-      this.config.BOT_DISPLAY_NAME,
-      // imgUrl,
+      author,
+      imgUrl,
       'http://github.com/riledigital/qotd-bot/'
     )
     .setDescription(q + ' @everyone')
@@ -247,13 +269,13 @@ const updateRecordUsed = function (base, id) {
         }
       }
     ],
-    function (err, records) {
+    (err, records) => {
       if (err) {
         console.log(err);
         return;
       }
 
-      records.forEach(function (record) {
+      records.forEach((record) => {
         console.log(
             `Updated record ${record.get('question_id')} with ${record.get(
               'date_posted'

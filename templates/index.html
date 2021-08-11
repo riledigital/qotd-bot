@@ -1,0 +1,11 @@
+{% extends "layouts/base.html" %} {% block head %} {{ super() }}
+
+<title>QOTD-Bot</title>
+{% endblock %} {% block content %}
+<div class="container">
+  <h1>QOTD-Bot status</h1>
+  <div>{{ status | dump }}</div>
+  <pre>{{ context | dump(2) }}</pre>
+</div>
+
+{% endblock %}
