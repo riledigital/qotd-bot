@@ -4,7 +4,7 @@ const nunjucks = require('nunjucks');
 class StatusServer {
   constructor () {
     const app = express();
-    const port = 80;
+    const port = 8082;
 
     nunjucks.configure('templates', {
       autoescape: true,

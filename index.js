@@ -21,12 +21,16 @@ const StatusServer = require('./StatusServer.js');
 
 const client = new SimpleQotd(config);
 
-client.once('ready', () => {
+function startStatus (client) {
   // Set up a status server
   const statusServer = new StatusServer();
   // Wire up the update function to the web server
   statusServer.setUpdater(client.statusUpdater);
+}
 
+startStatus(client);
+
+client.once('ready', () => {
   switch (process.env.NODE_ENV) {
     case 'development': {
       // // Ping the channel

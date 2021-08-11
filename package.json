@@ -6,12 +6,11 @@
     "npm": "*"
   },
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "mocha --debug-brk",
     "start": "if-env NODE_ENV=production ?? npm run start:prod || npm run start:dev",
-    "start:dev": "nodenv -f ./start.js",
-    "start:prod": "node ./start.js"
+    "start:dev": "nodenv index.js -f",
+    "start:prod": "node ."
   },
   "author": "",
   "license": "ISC",
@@ -22,7 +21,6 @@
     "express": "^4.17.1",
     "if-env": "^1.0.4",
     "node-schedule": "^2.0.0",
-    "nodenv": "^0.1.0",
     "nunjucks": "^3.2.3"
   },
   "devDependencies": {

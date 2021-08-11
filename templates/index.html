@@ -4,7 +4,8 @@
 {% endblock %} {% block content %}
 <div class="container">
   <h1>QOTD-Bot status</h1>
-  <div>{{ status }}</div>
+  <div>{{ status | dump }}</div>
+  <pre>{{ context | dump(2) }}</pre>
 </div>
 
 {% endblock %}
