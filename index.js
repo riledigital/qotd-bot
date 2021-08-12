@@ -1,21 +1,4 @@
 const config = require('./config.js');
-
-let envPath = '.env.development';
-
-switch (process.env.NODE_ENV) {
-  case 'production': {
-    envPath = '.env.production';
-    break;
-  }
-
-  case 'development': {
-    envPath = '.env.development';
-    break;
-  }
-}
-
-const envs = require('dotenv').config({ path: envPath });
-
 const SimpleQotd = require('./SimpleQotd.js');
 const StatusServer = require('./StatusServer.js');
 

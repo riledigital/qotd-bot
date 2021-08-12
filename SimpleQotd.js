@@ -32,11 +32,15 @@ class SimpleQotd extends Discord.Client {
       context: {
         status: 'QOTD is live and listening.',
         test: 'testing',
-        nextInvocation: this.cronDaily.nextInvocation(),
+        nextInvocation: this.nextInvocation,
         paused: this.paused,
         lastQuestion: this.lastQuestion
       }
     };
+  }
+
+  get nextInvocation () {
+    return this.cronDaily.nextInvocation();
   }
 
   taskSendQotd () {
@@ -83,7 +87,7 @@ class SimpleQotd extends Discord.Client {
     this.cronDaily = schedule.scheduleJob(this.config.Q_FREQUENCY, () => {
       this.cronRunQotd();
     });
-    const estTime = this.cronDaily.nextInvocation().toLocaleString('en-US', {
+    const estTime = this.nextInvocation.toLocaleString('en-US', {
       timeZone: 'America/New_York'
     });
     // let fmtTime = new Date(estTime).toISOString();
@@ -124,8 +128,8 @@ class SimpleQotd extends Discord.Client {
 
   getNextTime () {
     try {
-      const preTime = this.cronDaily.nextInvocation();
-      // const estTime = this.cronDaily.nextInvocation().toLocaleString('en-US', {
+      const preTime = this.nextInvocation;
+      // const estTime = this.nextInvocation.toLocaleString('en-US', {
       //   timeZone: 'America/New_York'
       // });
       return preTime;
@@ -147,7 +151,7 @@ class SimpleQotd extends Discord.Client {
         break;
       }
       case '!status': {
-        msg.reply(`Next invocation is: ${this.cronDaily.nextInvocation()}. Status page: ${this.config.PUBLIC_URL}`);
+        msg.reply(`Next invocation is: ${this.nextInvocation}. Status page: ${this.config.PUBLIC_URL}`);
         break;
       }
       case '!skip': {
@@ -170,7 +174,7 @@ class SimpleQotd extends Discord.Client {
           break;
         } else {
           msg.reply(
-            `QOTD is still running! Next one is at ${this.cronDaily.nextInvocation()}`
+            `QOTD is still running! Next one is at ${this.nextInvocation}`
           );
           return null;
           break;

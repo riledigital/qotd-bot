@@ -4,8 +4,7 @@ const config = require('./config');
 class StatusServer {
   constructor () {
     const app = express();
-    // const port = config.PORT;
-    const port = process.env.PORT ?? 3000;
+    const PORT = process.env.PORT || 3000;
 
     nunjucks.configure('templates', {
       autoescape: true,
@@ -17,8 +16,8 @@ class StatusServer {
       res.render('index.html', this.getContext());
     });
 
-    app.listen(port, () => {
-      console.log(`Example app listening at http://localhost:${port}`);
+    app.listen(PORT, () => {
+      console.log(`Example app listening at http://localhost:${PORT}`);
     });
   }
 
