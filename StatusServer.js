@@ -13,7 +13,9 @@ class StatusServer {
 
     app.get('/', (req, res) => {
       // call getContext
-      res.render('index.html', this.getContext());
+      const context = this.getContext();
+      console.log(context);
+      res.render('index.html', context);
     });
 
     app.listen(PORT, () => {
